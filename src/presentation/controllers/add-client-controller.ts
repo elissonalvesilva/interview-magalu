@@ -1,7 +1,18 @@
+import { ok } from './../helpers/http-helpers';
+import { MissingParamError } from '../erros';
+import { badRequest } from '../helpers/http-helpers';
 import { Controller, HttpResponse } from '../protocols';
 
-export class AddClientControler implements Controller {
-  handle(request: any): Promise<HttpResponse> {
-    throw new Error('Method not implemented.');
+export class AddClientController implements Controller {
+  async handle(request: any): Promise<HttpResponse> {
+    const requiredFields = ['name', 'email'];
+
+    for (const field of requiredFields) {
+      if (!request.body[field]) {
+        return badRequest(new MissingParamError(field));
+      }
+    }
+
+    return Promise.resolve(ok(true));
   }
 }
