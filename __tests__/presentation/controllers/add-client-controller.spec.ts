@@ -1,15 +1,32 @@
-import { MissingParamError } from '../../../src/presentation/erros';
+import { EmailValidator } from 'presentation/protocols/email-validator';
+import {
+  InvalidParamError,
+  MissingParamError,
+} from '../../../src/presentation/erros';
 import { badRequest } from '../../../src/presentation/helpers/http-helpers';
 import { AddClientController } from './../../../src/presentation/controllers/add-client-controller';
 
+const makeEmailValidator = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValidEmail(email: string): boolean {
+      return true;
+    }
+  }
+
+  return new EmailValidatorStub();
+};
+
 interface ControllerStub {
   sut: AddClientController;
+  emailValidatorStub: EmailValidator;
 }
 
 const makeStub = (): ControllerStub => {
-  const sut = new AddClientController();
+  const emailValidatorStub = makeEmailValidator();
+  const sut = new AddClientController(emailValidatorStub);
   return {
     sut,
+    emailValidatorStub,
   };
 };
 describe('Add Client Controller', () => {
@@ -39,5 +56,22 @@ describe('Add Client Controller', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('email')));
+  });
+
+  test('should return erro if email is not valid', async () => {
+    const { sut, emailValidatorStub } = makeStub();
+
+    jest.spyOn(emailValidatorStub, 'isValidEmail').mockReturnValueOnce(false);
+
+    const httpRequest = {
+      body: {
+        name: 'Elisson',
+        email: 'mailxx.com',
+      },
+    };
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')));
   });
 });
