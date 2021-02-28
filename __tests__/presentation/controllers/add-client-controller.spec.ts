@@ -26,4 +26,18 @@ describe('Add Client Controller', () => {
 
     expect(httpResponse).toEqual(badRequest(new MissingParamError('name')));
   });
+
+  test('should return erro if email is not provided', async () => {
+    const { sut } = makeStub();
+
+    const httpRequest = {
+      body: {
+        name: 'Elisson',
+      },
+    };
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('email')));
+  });
 });
