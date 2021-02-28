@@ -4,6 +4,7 @@ import { badRequest } from '../helpers/http-helpers';
 import { Controller, HttpResponse } from '../protocols';
 import { EmailValidator } from 'presentation/protocols/email-validator';
 import { AddClient } from 'domain/use-cases/add-client';
+import { EmailInUseError } from '../erros/email-in-use-error';
 
 export class AddClientController implements Controller {
   constructor(
@@ -28,7 +29,11 @@ export class AddClientController implements Controller {
 
       const validClient = await this.addClient.add(request);
 
-      return ok(validClient);
+      if (!validClient) {
+        return badRequest(new EmailInUseError(request.email));
+      }
+
+      return ok(request);
     } catch (error) {
       return serverError(error);
     }
