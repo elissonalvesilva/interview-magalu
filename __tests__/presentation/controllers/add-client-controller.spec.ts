@@ -1,4 +1,4 @@
-import { AddClient } from './../../domain/use-cases/add-client';
+import { AddClient } from './../../domain/use-cases';
 import { EmailValidator } from 'presentation/protocols/email-validator';
 import {
   InvalidParamError,
@@ -11,7 +11,7 @@ import {
   serverError,
 } from '../../../src/presentation/helpers/http-helpers';
 import { AddClientController } from './../../../src/presentation/controllers/add-client-controller';
-import { Client } from '../../domain/protocols/client';
+import { Client } from '../../domain/protocols';
 import { EmailInUseError } from './../../../src/presentation/erros/email-in-use-error';
 
 const makeFakeClient = (): Client => {

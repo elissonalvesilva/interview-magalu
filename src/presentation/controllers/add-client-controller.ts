@@ -3,7 +3,7 @@ import { InvalidParamError, MissingParamError } from '../erros';
 import { badRequest } from '../helpers/http-helpers';
 import { Controller, HttpResponse } from '../protocols';
 import { EmailValidator } from 'presentation/protocols/email-validator';
-import { AddClient } from 'domain/use-cases/add-client';
+import { AddClient } from 'domain/use-cases';
 import { EmailInUseError } from '../erros/email-in-use-error';
 
 export class AddClientController implements Controller {
