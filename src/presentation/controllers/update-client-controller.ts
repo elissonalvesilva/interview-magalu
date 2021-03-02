@@ -25,7 +25,7 @@ export class UpdateClientController implements Controller {
         }
       }
 
-      const updatedClient = await this.updateClient.update(request);
+      const updatedClient = await this.updateClient.update(request.id, request);
 
       if (!updatedClient) {
         return notFound(new NotFoundParamError(request.id));

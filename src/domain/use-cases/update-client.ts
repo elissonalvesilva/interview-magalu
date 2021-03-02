@@ -1,5 +1,5 @@
 import { Client } from '../protocols';
 
 export interface UpdateClient {
-  update(client: Client): Promise<boolean>;
+  update(id: string, client: Client): Promise<boolean>;
 }
