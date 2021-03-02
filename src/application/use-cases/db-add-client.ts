@@ -15,7 +15,7 @@ export class DbAddClient implements AddClient {
     const emailIsAlreadyInUse = await this.checkClientByEmailRepository.checkClientByEmail(
       client.email,
     );
-    console.log(emailIsAlreadyInUse);
+
     if (!emailIsAlreadyInUse) {
       canCreateUser = await this.addClientRepository.addClient(client);
     }
