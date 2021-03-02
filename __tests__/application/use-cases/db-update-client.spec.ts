@@ -3,8 +3,10 @@ import { UpdateClientRepository } from 'application/protocols';
 import { Client } from 'domain/protocols';
 import { CheckClientByIdRepository } from 'application/protocols';
 
+const fakeId = 'valid_id';
+
 const makeFakeClient = (): Client => ({
-  id: 'valid_id',
+  id: fakeId,
   name: 'valid name',
   email: 'mail@mail.com',
 });
@@ -20,7 +22,7 @@ const makeCheckClientByIdRepository = (): CheckClientByIdRepository => {
 
 const makeUpdateClientRepository = (): UpdateClientRepository => {
   class UpdateClientRepositoryStub implements UpdateClientRepository {
-    updateClient(client: Client): Promise<boolean> {
+    updateClient(id: string, client: Client): Promise<boolean> {
       return new Promise((resolve) => resolve(true));
     }
   }
@@ -57,7 +59,7 @@ describe('DbUpdateClient UseCase', () => {
         'checkClientById',
       );
 
-      await sut.update(makeFakeClient());
+      await sut.update(fakeId, makeFakeClient());
       expect(checkClientByIdRepositorySpy).toBeCalledWith(makeFakeClient().id);
     });
 
@@ -70,7 +72,7 @@ describe('DbUpdateClient UseCase', () => {
           new Promise((resolve, reject) => reject(new Error())),
         );
 
-      const promise = sut.update(makeFakeClient());
+      const promise = sut.update(fakeId, makeFakeClient());
       await expect(promise).rejects.toThrow();
     });
   });
@@ -92,8 +94,11 @@ describe('DbUpdateClient UseCase', () => {
         'updateClient',
       );
 
-      await sut.update(makeFakeClient());
-      expect(UpdateClientRepositorySpy).toBeCalledWith(makeFakeClient());
+      await sut.update(fakeId, makeFakeClient());
+      expect(UpdateClientRepositorySpy).toBeCalledWith(
+        fakeId,
+        makeFakeClient(),
+      );
     });
 
     test('should return throw if UpdateClientRepository throws', async () => {
@@ -113,7 +118,7 @@ describe('DbUpdateClient UseCase', () => {
           new Promise((resolve, reject) => reject(new Error())),
         );
 
-      const promise = sut.update(makeFakeClient());
+      const promise = sut.update(fakeId, makeFakeClient());
       await expect(promise).rejects.toThrow();
     });
   });

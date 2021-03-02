@@ -22,7 +22,7 @@ const makeFakeClient = (): Client => {
 };
 const makeUpdateClient = (): UpdateClient => {
   class UpdateClientStub implements UpdateClient {
-    update(client: Client): Promise<boolean> {
+    update(id: string, client: Client): Promise<boolean> {
       return new Promise((resolve) => resolve(true));
     }
   }
