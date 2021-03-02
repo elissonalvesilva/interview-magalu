@@ -43,7 +43,7 @@ const makeSut = (): SutTypes => {
   };
 };
 
-describe('DbDeleteClient UseCase', () => {
+describe.only('DbDeleteClient UseCase', () => {
   describe('CheckClientByIdRepositorySpy', () => {
     test('should call DeleteClientRepository with correct values', async () => {
       const { sut, checkClientByIdRepositoryStub } = makeSut();
@@ -51,6 +51,22 @@ describe('DbDeleteClient UseCase', () => {
       const checkClientByIdRepositorySpy = jest.spyOn(
         checkClientByIdRepositoryStub,
         'checkClientById',
+      );
+
+      await sut.delete(id);
+      expect(checkClientByIdRepositorySpy).toBeCalledWith(id);
+    });
+
+    test('should call DeleteClientRepository with correct values and return false if not exists client', async () => {
+      const { sut, checkClientByIdRepositoryStub } = makeSut();
+
+      const checkClientByIdRepositorySpy = jest.spyOn(
+        checkClientByIdRepositoryStub,
+        'checkClientById',
+      );
+
+      checkClientByIdRepositorySpy.mockReturnValueOnce(
+        new Promise((resolve) => resolve(false)),
       );
 
       await sut.delete(id);
