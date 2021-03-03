@@ -5,6 +5,7 @@ import {
   CheckClientByEmailRepository,
   CheckClientByIdRepository,
   GetClientRepository,
+  UpdateClientRepository,
 } from './../../../application/protocols';
 import { MongoHelper } from './helpers';
 
@@ -13,7 +14,8 @@ export class ClientMongoRepository
     AddClientRepository,
     CheckClientByIdRepository,
     CheckClientByEmailRepository,
-    GetClientRepository {
+    GetClientRepository,
+    UpdateClientRepository {
   async addClient(client: Client): Promise<boolean> {
     const clientCollection = await MongoHelper.getCollection('clients');
     const resultResponse = await clientCollection.insertOne(client);
@@ -67,5 +69,22 @@ export class ClientMongoRepository
     );
 
     return client && MongoHelper.map(client);
+  }
+
+  async updateClient(id: string, client: Client): Promise<boolean> {
+    const clientCollection = await MongoHelper.getCollection('clients');
+    const updatedClient = await clientCollection.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          name: client.name,
+          email: client.email,
+        },
+      },
+    );
+
+    return updatedClient.modifiedCount > 0 ? true : false;
   }
 }
