@@ -4,6 +4,7 @@ import {
   AddClientRepository,
   CheckClientByEmailRepository,
   CheckClientByIdRepository,
+  DeleteClientRepository,
   GetClientRepository,
   UpdateClientRepository,
 } from './../../../application/protocols';
@@ -15,7 +16,8 @@ export class ClientMongoRepository
     CheckClientByIdRepository,
     CheckClientByEmailRepository,
     GetClientRepository,
-    UpdateClientRepository {
+    UpdateClientRepository,
+    DeleteClientRepository {
   async addClient(client: Client): Promise<boolean> {
     const clientCollection = await MongoHelper.getCollection('clients');
     const resultResponse = await clientCollection.insertOne(client);
@@ -86,5 +88,18 @@ export class ClientMongoRepository
     );
 
     return updatedClient.modifiedCount > 0 ? true : false;
+  }
+
+  async deleteClient(id: string): Promise<boolean> {
+    const clientCollection = await MongoHelper.getCollection('clients');
+    const deletedClient = await clientCollection.deleteOne({
+      _id: id,
+    });
+
+    if (deletedClient.deletedCount && deletedClient.deletedCount > 0) {
+      return true;
+    }
+
+    return false;
   }
 }
