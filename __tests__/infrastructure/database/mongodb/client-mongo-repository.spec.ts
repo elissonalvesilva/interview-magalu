@@ -31,6 +31,7 @@ describe('ClientMongoRepository', () => {
     clientCollection = await MongoHelper.getCollection('clients');
     await clientCollection.deleteMany({});
   });
+
   describe('Add Client method', async () => {
     test('Should return a client on success', async () => {
       const sut = makeSut();
@@ -52,6 +53,22 @@ describe('ClientMongoRepository', () => {
     test('Should return false if id is not valid', async () => {
       const sut = makeSut();
       const existsClient = await sut.checkClientById('123');
+      expect(existsClient).toBe(false);
+    });
+  });
+
+  describe('Check Client By Email method', async () => {
+    test('Should return true if email is valid', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      await clientCollection.insertOne(addClientParams);
+      const existsClient = await sut.checkClientByEmail(addClientParams.email);
+      expect(existsClient).toBe(true);
+    });
+
+    test('Should return false if email is not valid', async () => {
+      const sut = makeSut();
+      const existsClient = await sut.checkClientByEmail(faker.internet.email());
       expect(existsClient).toBe(false);
     });
   });
