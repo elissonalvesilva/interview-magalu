@@ -130,4 +130,30 @@ describe('ClientMongoRepository', () => {
       expect(client.name).toBe(addClientParams.name);
     });
   });
+
+  describe('Delete Client method', async () => {
+    test('Should return true if client is updated', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+      const fakeClient = createdClient.ops[0];
+      const response = await sut.deleteClient(fakeClient._id);
+      expect(response).toBe(true);
+      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      expect(client).toBeFalsy();
+      expect(client).toBeNull();
+    });
+
+    test('Should return false if client is not delete and id is invalid', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+      const fakeClient = createdClient.ops[0];
+      const response = await sut.deleteClient('fake_id');
+      expect(response).toBe(false);
+      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      expect(client).toBeTruthy();
+      expect(client.name).toBe(addClientParams.name);
+    });
+  });
 });
