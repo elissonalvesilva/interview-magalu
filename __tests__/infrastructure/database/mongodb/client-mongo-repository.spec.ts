@@ -93,4 +93,41 @@ describe('ClientMongoRepository', () => {
       expect(createdClient).toBeFalsy();
     });
   });
+
+  describe('Update Client method', async () => {
+    test('Should return true if client is updated', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+      const fakeClient = createdClient.ops[0];
+      const updatedClientParams: Client = {
+        name: 'valid name 2',
+        email: 'mail@mail.com',
+      };
+      const response = await sut.updateClient(
+        fakeClient._id,
+        updatedClientParams,
+      );
+      expect(response).toBe(true);
+      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      expect(client).toBeTruthy();
+      expect(client.name).toBe(updatedClientParams.name);
+    });
+
+    test('Should return false if client is not updated and id is invalid', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+      const fakeClient = createdClient.ops[0];
+      const updatedClientParams: Client = {
+        name: 'valid name 2',
+        email: 'mail@mail.com',
+      };
+      const response = await sut.updateClient('fake_id', updatedClientParams);
+      expect(response).toBe(false);
+      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      expect(client).toBeTruthy();
+      expect(client.name).toBe(addClientParams.name);
+    });
+  });
 });
