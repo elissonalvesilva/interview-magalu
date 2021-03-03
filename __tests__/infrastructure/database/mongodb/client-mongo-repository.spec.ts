@@ -72,4 +72,25 @@ describe('ClientMongoRepository', () => {
       expect(existsClient).toBe(false);
     });
   });
+
+  describe('Get Client method', async () => {
+    test('Should return a client if id is valid', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const client = await clientCollection.insertOne(addClientParams);
+      const createdClient = await sut.getClient(client.ops[0]._id);
+      expect(createdClient).toBeTruthy();
+      expect(createdClient.id).toBeTruthy();
+      expect(createdClient.name).toBe(addClientParams.name);
+      expect(createdClient.email).toBe(addClientParams.email);
+    });
+
+    test('Should return a null if id is not valid', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      await clientCollection.insertOne(addClientParams);
+      const createdClient = await sut.getClient('not valid id');
+      expect(createdClient).toBeFalsy();
+    });
+  });
 });
