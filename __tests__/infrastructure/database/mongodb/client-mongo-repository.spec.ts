@@ -16,7 +16,7 @@ const makeSut = (): ClientMongoRepository => {
   return new ClientMongoRepository();
 };
 
-let accountCollection: Collection;
+let clientCollection: Collection;
 
 describe('ClientMongoRepository', () => {
   beforeAll(async () => {
@@ -28,15 +28,31 @@ describe('ClientMongoRepository', () => {
   });
 
   beforeEach(async () => {
-    accountCollection = await MongoHelper.getCollection('clients');
-    await accountCollection.deleteMany({});
+    clientCollection = await MongoHelper.getCollection('clients');
+    await clientCollection.deleteMany({});
   });
   describe('Add Client method', async () => {
-    test('Should return an client on success', async () => {
+    test('Should return a client on success', async () => {
       const sut = makeSut();
       const addClient = makeAddClient();
       const isValid = await sut.addClient(addClient);
       expect(isValid).toBe(true);
+    });
+  });
+
+  describe('Check Client By Id method', async () => {
+    test('Should return true if id is valid', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const client = await clientCollection.insertOne(addClientParams);
+      const existsClient = await sut.checkClientById(client.ops[0]._id);
+      expect(existsClient).toBe(true);
+    });
+
+    test('Should return false if id is not valid', async () => {
+      const sut = makeSut();
+      const existsClient = await sut.checkClientById('123');
+      expect(existsClient).toBe(false);
     });
   });
 });
