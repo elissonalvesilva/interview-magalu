@@ -4,6 +4,7 @@ import faker from 'faker';
 import { MongoHelper } from './../../../../src/infrastructure/database/mongodb/helpers/mongo-helper';
 import { ClientMongoRepository } from './../../../../src/infrastructure/database/mongodb/client-mongo-repository';
 import { Client } from './../../../../src/domain/protocols';
+import { create } from 'domain';
 
 const makeFakeProductId = (): any => {
   return { id: 'valid_product_id' };
@@ -172,7 +173,7 @@ describe('ClientMongoRepository', () => {
       expect(response).toBe(true);
       const client = await clientCollection.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
-      expect(client.favorits).toMatchObject([{ productId: fakeProductId }]);
+      expect(client.favorites).toMatchObject([{ productId: fakeProductId }]);
     });
 
     test('Should return false if product is not added', async () => {
@@ -188,7 +189,46 @@ describe('ClientMongoRepository', () => {
       expect(response).toBe(false);
       const client = await clientCollection.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
-      expect(client.favorits).toBeUndefined();
+      expect(client.favorites).toBeUndefined();
+    });
+  });
+
+  describe('Check Product method', async () => {
+    test('Should return true if product is already in favorit list', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      addClientParams.favorites = [makeFakeProductId().id];
+      const createdClient = await clientCollection.insertOne(addClientParams);
+
+      const fakeClient = createdClient.ops[0];
+      const fakeProductId = makeFakeProductId().id;
+
+      const response = await sut.checkProduct(fakeClient._id, fakeProductId);
+      expect(response).toBeTruthy();
+    });
+
+    test('Should return false if product is not in favorit list', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      addClientParams.favorites = [makeFakeProductId().id];
+      const createdClient = await clientCollection.insertOne(addClientParams);
+
+      const fakeClient = createdClient.ops[0];
+
+      const response = await sut.checkProduct(fakeClient._id, 'teste');
+      expect(response).toBeFalsy();
+    });
+
+    test('Should return false if product is not in favorit list and favorit list in empty', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+
+      const fakeClient = createdClient.ops[0];
+      const fakeProductId = makeFakeProductId().id;
+
+      const response = await sut.checkProduct(fakeClient._id, fakeProductId);
+      expect(response).toBeFalsy();
     });
   });
 });
