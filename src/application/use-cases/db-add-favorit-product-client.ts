@@ -53,7 +53,7 @@ export class DbAddFavoritProductClient implements AddFavoritProductClient {
       return responseAddFavoritProduct;
     }
 
-    await this.addFavoritProductClient.add(clientId, productId);
+    await this.addFavoritProductClient.addFavorit(clientId, productId);
 
     responseAddFavoritProduct.added = true;
 
