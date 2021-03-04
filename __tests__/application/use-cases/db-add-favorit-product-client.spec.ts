@@ -160,6 +160,7 @@ describe('DbAddFavoritProductClient UseCase', () => {
       );
       await sut.add(makeFakeClientId().id, makeFakeProductId().id);
       expect(checkAddedFavoritProductRepositorySpy).toBeCalledWith(
+        makeFakeClientId().id,
         makeFakeProductId().id,
       );
     });
