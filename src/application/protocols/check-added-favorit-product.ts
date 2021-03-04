@@ -1,3 +1,3 @@
 export interface CheckAddedFavoritProductRepository {
-  checkProduct(productId: string): Promise<boolean>;
+  checkProduct(clientId: string, productId: string): Promise<boolean>;
 }

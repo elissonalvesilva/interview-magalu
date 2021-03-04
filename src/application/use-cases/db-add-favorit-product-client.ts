@@ -57,6 +57,7 @@ export class DbAddFavoritProductClient implements AddFavoritProductClient {
     }
 
     const isAddedProduct = await this.checkAddedFavoritProductRepository.checkProduct(
+      clientId,
       productId,
     );
 
