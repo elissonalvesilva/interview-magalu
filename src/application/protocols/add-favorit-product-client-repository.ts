@@ -1,3 +1,3 @@
 export interface AddFavoritProductClientRepository {
-  add(clientId: string, productId: string): Promise<boolean>;
+  addFavorit(clientId: string, productId: string): Promise<boolean>;
 }
