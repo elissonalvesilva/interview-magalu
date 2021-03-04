@@ -3,6 +3,7 @@ import { Client } from 'domain/protocols';
 import {
   AddClientRepository,
   AddFavoritProductClientRepository,
+  CheckAddedFavoritProductRepository,
   CheckClientByEmailRepository,
   CheckClientByIdRepository,
   DeleteClientRepository,
@@ -19,7 +20,8 @@ export class ClientMongoRepository
     GetClientRepository,
     UpdateClientRepository,
     DeleteClientRepository,
-    AddFavoritProductClientRepository {
+    AddFavoritProductClientRepository,
+    CheckAddedFavoritProductRepository {
   async addClient(client: Client): Promise<boolean> {
     const clientCollection = await MongoHelper.getCollection('clients');
     const resultResponse = await clientCollection.insertOne(client);
@@ -113,12 +115,27 @@ export class ClientMongoRepository
       },
       {
         $push: {
-          favorits: {
+          favorites: {
             productId,
           },
         },
       },
     );
     return addedProductInClient.modifiedCount > 0 ? true : false;
+  }
+
+  async checkProduct(clientId: string, productId: string): Promise<boolean> {
+    const clientCollection = await MongoHelper.getCollection('clients');
+    const client = await clientCollection.findOne({
+      _id: clientId,
+    });
+
+    if (client.favorites) {
+      if (client.favorites.indexOf(productId) !== -1) {
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 }
