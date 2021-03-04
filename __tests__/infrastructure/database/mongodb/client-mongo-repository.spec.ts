@@ -5,6 +5,10 @@ import { MongoHelper } from './../../../../src/infrastructure/database/mongodb/h
 import { ClientMongoRepository } from './../../../../src/infrastructure/database/mongodb/client-mongo-repository';
 import { Client } from './../../../../src/domain/protocols';
 
+const makeFakeProductId = (): any => {
+  return { id: 'valid_product_id' };
+};
+
 const makeAddClient = (): Client => {
   return {
     name: 'valid name',
@@ -154,6 +158,37 @@ describe('ClientMongoRepository', () => {
       const client = await clientCollection.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
       expect(client.name).toBe(addClientParams.name);
+    });
+  });
+
+  describe('Add Favorit method', async () => {
+    test('Should return true if product is added', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+      const fakeClient = createdClient.ops[0];
+      const fakeProductId = makeFakeProductId().id;
+      const response = await sut.addFavorit(fakeClient._id, fakeProductId);
+      expect(response).toBe(true);
+      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      expect(client).toBeTruthy();
+      expect(client.favorits).toMatchObject([{ productId: fakeProductId }]);
+    });
+
+    test('Should return false if product is not added', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      const createdClient = await clientCollection.insertOne(addClientParams);
+      const fakeClient = createdClient.ops[0];
+      const updatedClientParams: Client = {
+        name: 'valid name 2',
+        email: 'mail@mail.com',
+      };
+      const response = await sut.updateClient('fake_id', updatedClientParams);
+      expect(response).toBe(false);
+      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      expect(client).toBeTruthy();
+      expect(client.favorits).toBeUndefined();
     });
   });
 });
