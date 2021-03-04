@@ -1,11 +1,13 @@
 import {
   NotFoundClientResponse,
   NotFoundProductResponse,
+  ProductAlreadyAddedResponse,
 } from './../../presentation/helpers/stack-errors-favorits';
 import {
   CheckClientByIdRepository,
   ProductServiceRepository,
   AddFavoritProductClientRepository,
+  CheckAddedFavoritProductRepository,
 } from './../protocols';
 import { AddFavoritProductClient } from './../../domain/protocols/add-favorit-product-client';
 import { ResponseAddFavoritProduct } from './../../presentation/protocols';
@@ -13,6 +15,7 @@ import { ResponseAddFavoritProduct } from './../../presentation/protocols';
 export class DbAddFavoritProductClient implements AddFavoritProductClient {
   constructor(
     private checkClientByIdRepository: CheckClientByIdRepository,
+    private checkAddedFavoritProductRepository: CheckAddedFavoritProductRepository,
     private productServiceRepository: ProductServiceRepository,
     private addFavoritProductClient: AddFavoritProductClientRepository,
   ) {}
@@ -46,6 +49,20 @@ export class DbAddFavoritProductClient implements AddFavoritProductClient {
     if (product.statusCode >= 400) {
       const fakeStack: NotFoundProductResponse = {
         message: 'Not found product',
+        productid: productId,
+      };
+      responseAddFavoritProduct.stack = fakeStack;
+
+      return responseAddFavoritProduct;
+    }
+
+    const isAddedProduct = await this.checkAddedFavoritProductRepository.checkProduct(
+      productId,
+    );
+
+    if (isAddedProduct) {
+      const fakeStack: ProductAlreadyAddedResponse = {
+        message: 'Product already added',
         productid: productId,
       };
       responseAddFavoritProduct.stack = fakeStack;
