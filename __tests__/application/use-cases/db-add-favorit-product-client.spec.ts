@@ -32,7 +32,7 @@ const makeFakeProduct = (): Product => {
 const makeAddFavoritProductClientRepository = (): AddFavoritProductClientRepository => {
   class AddFavoritProductClientRepositoryStub
     implements AddFavoritProductClientRepository {
-    add(clientId: string, productId: string): Promise<boolean> {
+    addFavorit(clientId: string, productId: string): Promise<boolean> {
       return new Promise((resolve) => resolve(true));
     }
   }
@@ -140,7 +140,7 @@ describe('DbAddFavoritProductClient UseCase', () => {
       const { sut, addFavoritProductClientRepositoryStub } = makeSut();
       const addFavoritProductClientRepositorySpy = jest.spyOn(
         addFavoritProductClientRepositoryStub,
-        'add',
+        'addFavorit',
       );
       await sut.add(makeFakeClientId().id, makeFakeProductId().id);
       expect(addFavoritProductClientRepositorySpy).toBeCalledWith(
@@ -151,7 +151,7 @@ describe('DbAddFavoritProductClient UseCase', () => {
     test('should return throw if AddFavoritProductClientRepository throws', async () => {
       const { sut, addFavoritProductClientRepositoryStub } = makeSut();
       jest
-        .spyOn(addFavoritProductClientRepositoryStub, 'add')
+        .spyOn(addFavoritProductClientRepositoryStub, 'addFavorit')
         .mockReturnValueOnce(
           new Promise((resolve, reject) => reject(new Error())),
         );
