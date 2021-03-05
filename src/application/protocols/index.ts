@@ -7,3 +7,4 @@ export * from './delete-client-repository';
 export * from './add-favorit-product-client-repository';
 export * from './product-service-repository';
 export * from './check-added-favorit-product';
+export * from './http';
