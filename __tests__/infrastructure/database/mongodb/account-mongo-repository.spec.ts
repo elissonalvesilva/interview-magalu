@@ -30,11 +30,29 @@ describe('AccountMongoRepository', () => {
     await AccountModel.deleteMany({});
   });
   describe('add method', () => {
-    test('Should return true if created account', async () => {
+    test('should return true if created account', async () => {
       const sut = makeSut();
       const fakeAccount = makeFakeAccount();
       const isValid = await sut.add(fakeAccount);
       expect(isValid).toBe(true);
+    });
+  });
+
+  describe('CheckAccountByEmail method', () => {
+    test('should return true if email already in database', async () => {
+      const account = await AccountModel.create(makeFakeAccount());
+
+      const sut = makeSut();
+      const isValid = await sut.checkAccountByEmail(account.email);
+      expect(isValid).toBe(true);
+    });
+
+    test('should return false if email not in database', async () => {
+      await AccountModel.create(makeFakeAccount());
+
+      const sut = makeSut();
+      const isValid = await sut.checkAccountByEmail('invalid_email@mail.com');
+      expect(isValid).toBe(false);
     });
   });
 });
