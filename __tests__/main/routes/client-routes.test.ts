@@ -1,4 +1,6 @@
+import axios from 'axios';
 import request from 'supertest';
+
 import { HttpResponse } from './../../../src/presentation/protocols';
 
 import { MongoHelper } from './../../../src/infrastructure/database/mongodb/helpers/mongoose-helper';
@@ -176,6 +178,7 @@ describe('Client Routes', () => {
       expect(response.body.error).toBe(httpResponse.body.message);
     });
   });
+
   describe('DELETE /client -> Delete Client', () => {
     test('should delete client', async () => {
       const client = await ClientModel.create({
@@ -219,6 +222,58 @@ describe('Client Routes', () => {
 
       const httpResponse: HttpResponse = notFound(
         new NotFoundParamError('604198f3d1f52339643d2367'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+  });
+
+  describe('POST /client/product -> Add Favorit', () => {
+    test('should add product in client', async () => {
+      const { data } = await axios.get(`${process.env.API_PRODUCT}/?page=1`);
+      const productid = data.products[0].id;
+      const client = await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+      const clientId = client._id;
+
+      await request(app)
+        .post('/api/client/product')
+        .send({
+          clientid: clientId,
+          productid,
+        })
+        .expect(200);
+    });
+
+    test('should return 400 if clientid is not provided on add product in favorit list', async () => {
+      const response = await request(app)
+        .post('/api/client/product')
+        .send({
+          productid: 'valid_productid',
+        })
+        .expect(400);
+
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('clientid'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+    test('should return 400 if productid is not provided on add product in favorit list', async () => {
+      const client = await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+      const clientId = client._id;
+      const response = await request(app)
+        .post('/api/client/product')
+        .send({
+          clientid: clientId,
+        })
+        .expect(400);
+
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('productid'),
       );
       expect(response.body.error).toBe(httpResponse.body.message);
     });
