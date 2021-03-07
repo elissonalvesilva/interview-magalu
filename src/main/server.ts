@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { MongoHelper } from './../infrastructure/database/mongodb/helpers/mongo-helper';
+import { MongoHelper } from './../infrastructure/database/mongodb/helpers/mongoose-helper';
 
 dotenv.config();
 
