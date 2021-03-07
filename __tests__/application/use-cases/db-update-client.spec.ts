@@ -48,7 +48,7 @@ const makeSut = (): SutTypes => {
   };
 };
 
-describe('DbUpdateClient UseCase', () => {
+describe.only('DbUpdateClient UseCase', () => {
   describe('CheckClientByIdRepository', () => {
     test('should call CheckClientByIdRepository with correct values', async () => {
       const { sut, checkClientByIdRepositoryStub } = makeSut();
@@ -86,7 +86,7 @@ describe('DbUpdateClient UseCase', () => {
 
       jest
         .spyOn(checkClientByIdRepositoryStub, 'checkClientById')
-        .mockReturnValueOnce(new Promise((resolve) => resolve(false)));
+        .mockReturnValueOnce(new Promise((resolve) => resolve(true)));
 
       const UpdateClientRepositorySpy = jest.spyOn(
         updateClientRepositoryStub,
@@ -109,7 +109,7 @@ describe('DbUpdateClient UseCase', () => {
 
       jest
         .spyOn(checkClientByIdRepositoryStub, 'checkClientById')
-        .mockReturnValueOnce(new Promise((resolve) => resolve(false)));
+        .mockReturnValueOnce(new Promise((resolve) => resolve(true)));
 
       jest
         .spyOn(updateClientRepositoryStub, 'updateClient')
