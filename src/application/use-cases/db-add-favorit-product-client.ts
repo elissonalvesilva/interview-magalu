@@ -9,7 +9,7 @@ import {
   AddFavoritProductClientRepository,
   CheckAddedFavoritProductRepository,
 } from './../protocols';
-import { AddFavoritProductClient } from './../../domain/protocols/add-favorit-product-client';
+import { AddFavoritProductClient } from './../../domain/use-cases/add-favorit-product-client';
 import { ResponseAddFavoritProduct } from './../../presentation/protocols';
 
 export class DbAddFavoritProductClient implements AddFavoritProductClient {

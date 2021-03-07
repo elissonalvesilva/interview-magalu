@@ -1,4 +1,4 @@
-import { AddFavoritProductClient } from './../../domain/protocols/add-favorit-product-client';
+import { AddFavoritProductClient } from './../../domain/use-cases/add-favorit-product-client';
 import { MissingParamError, BadRequestError } from './../../presentation/erros';
 import { badRequest, ok, serverError } from './../../presentation/helpers';
 import { HttpResponse } from './../../presentation/protocols';
