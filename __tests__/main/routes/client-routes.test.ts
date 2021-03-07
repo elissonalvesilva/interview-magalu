@@ -112,7 +112,7 @@ describe('Client Routes', () => {
         .expect(200);
     });
 
-    test('should return 400 if id is not provided on create client', async () => {
+    test('should return 400 if id is not provided on update client', async () => {
       const response = await request(app)
         .put('/api/client')
         .send({
@@ -127,7 +127,7 @@ describe('Client Routes', () => {
       expect(response.body.error).toBe(httpResponse.body.message);
     });
 
-    test('should return 400 if name is not provided on create client', async () => {
+    test('should return 400 if name is not provided on update client', async () => {
       const response = await request(app)
         .put('/api/client')
         .send({
@@ -141,7 +141,7 @@ describe('Client Routes', () => {
       );
       expect(response.body.error).toBe(httpResponse.body.message);
     });
-    test('should return 400 if email is not provided on create client', async () => {
+    test('should return 400 if email is not provided on update client', async () => {
       const response = await request(app)
         .put('/api/client')
         .send({
@@ -167,6 +167,53 @@ describe('Client Routes', () => {
           id: '604198f3d1f52339643d2367',
           name: 'valid name',
           email: 'mail@mail.com',
+        })
+        .expect(404);
+
+      const httpResponse: HttpResponse = notFound(
+        new NotFoundParamError('604198f3d1f52339643d2367'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+  });
+  describe('DELETE /client -> Delete Client', () => {
+    test('should delete client', async () => {
+      const client = await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+      const clientId = client._id;
+
+      await request(app)
+        .delete('/api/client')
+        .send({
+          id: clientId,
+        })
+        .expect(200);
+    });
+
+    test('should return 400 if id is not provided on delete client', async () => {
+      const response = await request(app)
+        .delete('/api/client')
+        .send({})
+        .expect(400);
+
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('id'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+
+    test('should return 404 if id not found', async () => {
+      await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+
+      const response = await request(app)
+        .delete('/api/client')
+        .send({
+          id: '604198f3d1f52339643d2367',
         })
         .expect(404);
 
