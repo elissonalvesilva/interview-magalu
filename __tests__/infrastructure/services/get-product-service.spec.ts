@@ -5,7 +5,7 @@ import {
 } from './../../../src/application/protocols/http/http-client';
 import { GetProductService } from './../../../src/infrastructure/services/get-product-service';
 
-const urlAPI = 'https://google.com';
+const urlAPI = 'https://google.com/';
 const fakeId = 'valid_id';
 
 const makeHttpClient = (): HttpClient => {
@@ -45,7 +45,7 @@ describe('GetProductService', () => {
     const httpClientStubSpy = jest.spyOn(httpClientStub, 'request');
     const fakeConfig = {
       method: 'get',
-      url: `${urlAPI}/${fakeId}`,
+      url: `${urlAPI}/${fakeId}/`,
     };
 
     await sut.getProduct(fakeId);
