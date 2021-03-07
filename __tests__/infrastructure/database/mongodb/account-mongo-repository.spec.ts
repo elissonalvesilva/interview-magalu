@@ -29,10 +29,12 @@ describe('AccountMongoRepository', () => {
   beforeEach(async () => {
     await AccountModel.deleteMany({});
   });
-  test('Should return true if created account', async () => {
-    const sut = makeSut();
-    const fakeAccount = makeFakeAccount();
-    const isValid = await sut.add(fakeAccount);
-    expect(isValid).toBe(true);
+  describe('add method', () => {
+    test('Should return true if created account', async () => {
+      const sut = makeSut();
+      const fakeAccount = makeFakeAccount();
+      const isValid = await sut.add(fakeAccount);
+      expect(isValid).toBe(true);
+    });
   });
 });
