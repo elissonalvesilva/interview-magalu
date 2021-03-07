@@ -11,6 +11,11 @@ export class DbGetClient implements GetClient {
 
   async get(id: string): Promise<Partial<ClientResult>> {
     const client = await this.getClientRepository.getClient(id);
+
+    if (!client) {
+      return {};
+    }
+
     const response: Partial<ClientResult> = {
       name: client.name,
       email: client.email,
