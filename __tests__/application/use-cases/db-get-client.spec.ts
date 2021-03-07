@@ -89,6 +89,19 @@ describe('DbGetClient UseCase', () => {
       const response = await sut.get(id);
       expect(response.favorites).toEqual([]);
     });
+
+    test('should return empty client if clients not found', async () => {
+      const { sut, getClientRepositoryStub } = makeSut();
+      jest
+        .spyOn(getClientRepositoryStub, 'getClient')
+        .mockImplementationOnce(() => {
+          return new Promise((resolve) => resolve({}));
+        });
+
+      const response = await sut.get(id);
+      expect(response.name).toBeUndefined();
+      expect(response.email).toBeUndefined();
+    });
   });
 
   describe('GetClientRepository', () => {
