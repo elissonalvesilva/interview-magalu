@@ -11,9 +11,9 @@ import {
 
 export default (router: Router): void => {
   router.post('/client', adaptRoute(createAddClientController()));
-  router.put('/client', adaptRoute(createUpdateClientController()));
-  router.delete('/client', adaptRoute(createDeleteClientController()));
-  router.get('/client', adaptRoute(createGetClientController()));
+  router.put('/client/:id', adaptRoute(createUpdateClientController()));
+  router.delete('/client/:id', adaptRoute(createDeleteClientController()));
+  router.get('/client/:id', adaptRoute(createGetClientController()));
 
   router.post(
     '/client/product',
