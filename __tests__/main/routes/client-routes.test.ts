@@ -105,9 +105,8 @@ describe('Client Routes', () => {
       const clientId = client._id;
 
       await request(app)
-        .put('/api/client')
+        .put(`/api/client/${clientId}`)
         .send({
-          id: clientId,
           name: 'valid name',
           email: 'mail@mail.com',
         })
@@ -116,24 +115,19 @@ describe('Client Routes', () => {
 
     test('should return 400 if id is not provided on update client', async () => {
       const response = await request(app)
-        .put('/api/client')
+        .put(`/api/client`)
         .send({
           name: 'valid name',
           email: 'mail@mail.com',
         })
-        .expect(400);
-
-      const httpResponse: HttpResponse = badRequest(
-        new MissingParamError('id'),
-      );
-      expect(response.body.error).toBe(httpResponse.body.message);
+        .expect(404);
+      expect(response.body.error).toBeUndefined();
     });
 
     test('should return 400 if name is not provided on update client', async () => {
       const response = await request(app)
-        .put('/api/client')
+        .put('/api/client/604198f3d1f52339643d2367')
         .send({
-          id: 'valid_id',
           email: 'mail@mail.com',
         })
         .expect(400);
@@ -145,9 +139,8 @@ describe('Client Routes', () => {
     });
     test('should return 400 if email is not provided on update client', async () => {
       const response = await request(app)
-        .put('/api/client')
+        .put('/api/client/604198f3d1f52339643d2367')
         .send({
-          id: 'valid_id',
           name: 'valid name',
         })
         .expect(400);
@@ -164,9 +157,8 @@ describe('Client Routes', () => {
       });
 
       const response = await request(app)
-        .put('/api/client')
+        .put('/api/client/604198f3d1f52339643d2367')
         .send({
-          id: '604198f3d1f52339643d2367',
           name: 'valid name',
           email: 'mail@mail.com',
         })
@@ -187,24 +179,16 @@ describe('Client Routes', () => {
       });
       const clientId = client._id;
 
-      await request(app)
-        .delete('/api/client')
-        .send({
-          id: clientId,
-        })
-        .expect(200);
+      await request(app).delete(`/api/client/${clientId}`).send({}).expect(200);
     });
 
     test('should return 400 if id is not provided on delete client', async () => {
       const response = await request(app)
-        .delete('/api/client')
+        .delete('/api/client/')
         .send({})
-        .expect(400);
+        .expect(404);
 
-      const httpResponse: HttpResponse = badRequest(
-        new MissingParamError('id'),
-      );
-      expect(response.body.error).toBe(httpResponse.body.message);
+      expect(response.body.error).toBeUndefined();
     });
 
     test('should return 404 if id not found', async () => {
@@ -214,10 +198,8 @@ describe('Client Routes', () => {
       });
 
       const response = await request(app)
-        .delete('/api/client')
-        .send({
-          id: '604198f3d1f52339643d2367',
-        })
+        .delete('/api/client/604198f3d1f52339643d2367')
+        .send({})
         .expect(404);
 
       const httpResponse: HttpResponse = notFound(
@@ -306,24 +288,16 @@ describe('Client Routes', () => {
         })
         .expect(200);
 
-      await request(app)
-        .get('/api/client')
-        .send({
-          id: clientId,
-        })
-        .expect(200);
+      await request(app).get(`/api/client/${clientId}`).send().expect(200);
     });
 
     test('should return 400 if id is not provided on get client', async () => {
       const response = await request(app)
-        .get('/api/client')
+        .get('/api/client/')
         .send({})
-        .expect(400);
+        .expect(404);
 
-      const httpResponse: HttpResponse = badRequest(
-        new MissingParamError('id'),
-      );
-      expect(response.body.error).toBe(httpResponse.body.message);
+      expect(response.body.error).toBeUndefined();
     });
   });
 });
