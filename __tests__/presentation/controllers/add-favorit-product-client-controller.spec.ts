@@ -3,7 +3,7 @@ import {
   NotFoundProductResponse,
   ProductAlreadyAddedResponse,
 } from './../../../src/presentation/helpers/stack-errors-favorits';
-import { AddFavoritProductClient } from './../../../src/domain/protocols/add-favorit-product-client';
+import { AddFavoritProductClient } from './../../../src/domain/use-cases/add-favorit-product-client';
 import { ResponseAddFavoritProduct } from './../../../src/presentation/protocols/response-added-favorit-product';
 import {
   BadRequestError,
