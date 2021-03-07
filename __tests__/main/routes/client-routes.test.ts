@@ -278,4 +278,52 @@ describe('Client Routes', () => {
       expect(response.body.error).toBe(httpResponse.body.message);
     });
   });
+
+  describe('GET /client -> Get Client', () => {
+    test('should return a client', async () => {
+      const client = await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+      const clientId = client._id;
+
+      const { data } = await axios.get(`${process.env.API_PRODUCT}/?page=1`);
+      const productid1 = data.products[0].id;
+      const productid2 = data.products[1].id;
+
+      await request(app)
+        .post('/api/client/product')
+        .send({
+          clientid: clientId,
+          productid: productid1,
+        })
+        .expect(200);
+      await request(app)
+        .post('/api/client/product')
+        .send({
+          clientid: clientId,
+          productid: productid2,
+        })
+        .expect(200);
+
+      await request(app)
+        .get('/api/client')
+        .send({
+          id: clientId,
+        })
+        .expect(200);
+    });
+
+    test('should return 400 if id is not provided on get client', async () => {
+      const response = await request(app)
+        .get('/api/client')
+        .send({})
+        .expect(400);
+
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('id'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+  });
 });
