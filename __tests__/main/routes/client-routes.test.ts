@@ -94,86 +94,86 @@ describe('Client Routes', () => {
     });
   });
 
-  // describe('PUT /client -> Update Client', () => {
-  //   test('should update client', async () => {
-  //     const client = await clientCollection.insertOne({
-  //       name: 'valid name',
-  //       email: 'mail@mail.com',
-  //     });
-  //     const clientId = client.ops[0]._id;
+  describe('PUT /client -> Update Client', () => {
+    test('should update client', async () => {
+      const client = await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+      const clientId = client._id;
 
-  //     await request(app)
-  //       .put('/api/client')
-  //       .send({
-  //         id: clientId,
-  //         name: 'valid name',
-  //         email: 'mail@mail.com',
-  //       })
-  //       .expect(200);
-  //   });
+      await request(app)
+        .put('/api/client')
+        .send({
+          id: clientId,
+          name: 'valid name',
+          email: 'mail@mail.com',
+        })
+        .expect(200);
+    });
 
-  //   test('should return 400 if id is not provided on create client', async () => {
-  //     const response = await request(app)
-  //       .put('/api/client')
-  //       .send({
-  //         name: 'valid name',
-  //         email: 'mail@mail.com',
-  //       })
-  //       .expect(400);
+    test('should return 400 if id is not provided on create client', async () => {
+      const response = await request(app)
+        .put('/api/client')
+        .send({
+          name: 'valid name',
+          email: 'mail@mail.com',
+        })
+        .expect(400);
 
-  //     const httpResponse: HttpResponse = badRequest(
-  //       new MissingParamError('id'),
-  //     );
-  //     expect(response.body.error).toBe(httpResponse.body.message);
-  //   });
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('id'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
 
-  //   test('should return 400 if name is not provided on create client', async () => {
-  //     const response = await request(app)
-  //       .put('/api/client')
-  //       .send({
-  //         id: 'valid_id',
-  //         email: 'mail@mail.com',
-  //       })
-  //       .expect(400);
+    test('should return 400 if name is not provided on create client', async () => {
+      const response = await request(app)
+        .put('/api/client')
+        .send({
+          id: 'valid_id',
+          email: 'mail@mail.com',
+        })
+        .expect(400);
 
-  //     const httpResponse: HttpResponse = badRequest(
-  //       new MissingParamError('name'),
-  //     );
-  //     expect(response.body.error).toBe(httpResponse.body.message);
-  //   });
-  //   test('should return 400 if email is not provided on create client', async () => {
-  //     const response = await request(app)
-  //       .put('/api/client')
-  //       .send({
-  //         id: 'valid_id',
-  //         name: 'valid name',
-  //       })
-  //       .expect(400);
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('name'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+    test('should return 400 if email is not provided on create client', async () => {
+      const response = await request(app)
+        .put('/api/client')
+        .send({
+          id: 'valid_id',
+          name: 'valid name',
+        })
+        .expect(400);
 
-  //     const httpResponse: HttpResponse = badRequest(
-  //       new MissingParamError('email'),
-  //     );
-  //     expect(response.body.error).toBe(httpResponse.body.message);
-  //   });
-  //   test('should return 404 if id not found', async () => {
-  //     await clientCollection.insertOne({
-  //       name: 'valid name',
-  //       email: 'mail@mail.com',
-  //     });
+      const httpResponse: HttpResponse = badRequest(
+        new MissingParamError('email'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+    test('should return 404 if id not found', async () => {
+      await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
 
-  //     const response = await request(app)
-  //       .put('/api/client')
-  //       .send({
-  //         id: '604198f3d1f52339643d2367',
-  //         name: 'valid name',
-  //         email: 'mail@mail.com',
-  //       })
-  //       .expect(404);
+      const response = await request(app)
+        .put('/api/client')
+        .send({
+          id: '604198f3d1f52339643d2367',
+          name: 'valid name',
+          email: 'mail@mail.com',
+        })
+        .expect(404);
 
-  //     const httpResponse: HttpResponse = notFound(
-  //       new NotFoundParamError('604198f3d1f52339643d2367'),
-  //     );
-  //     expect(response.body.error).toBe(httpResponse.body.message);
-  //   });
-  // });
+      const httpResponse: HttpResponse = notFound(
+        new NotFoundParamError('604198f3d1f52339643d2367'),
+      );
+      expect(response.body.error).toBe(httpResponse.body.message);
+    });
+  });
 });
