@@ -18,9 +18,7 @@ const makeFakeId = (): any => {
 };
 
 const makeFakeClient = (): Client => {
-  const { id } = makeFakeId();
   return {
-    id,
     name: 'fake client',
     email: 'mail@mail.com',
   };

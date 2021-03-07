@@ -13,13 +13,14 @@ import {
 import { UpdateClientController } from './../../../src/presentation/controllers/update-client-controller';
 import { Client } from 'domain/protocols';
 
-const makeFakeClient = (): Client => {
+const makeFakeRequestUpdate = (): any => {
   return {
-    id: 'valid_id',
+    id: 'fakeid',
     name: 'fake client',
     email: 'mail@mail.com',
   };
 };
+
 const makeUpdateClient = (): UpdateClient => {
   class UpdateClientStub implements UpdateClient {
     update(id: string, client: Client): Promise<boolean> {
@@ -83,7 +84,7 @@ describe('Update Client Controller', () => {
   test('Should return 200 if valid data is provided', async () => {
     const { sut } = makeSut();
 
-    const httpRequest = makeFakeClient();
+    const httpRequest = makeFakeRequestUpdate();
 
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(ok(true));
@@ -96,7 +97,7 @@ describe('Update Client Controller', () => {
       throw new Error();
     });
 
-    const httpRequest = makeFakeClient();
+    const httpRequest = makeFakeRequestUpdate();
 
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(serverError(new ServerError()));
@@ -109,9 +110,9 @@ describe('Update Client Controller', () => {
       .spyOn(updateClientStub, 'update')
       .mockReturnValueOnce(new Promise((resolve, reject) => resolve(false)));
 
-    const httpRequest = makeFakeClient();
+    const httpRequest = makeFakeRequestUpdate();
 
     const httpResponse = await sut.handle(httpRequest);
-    expect(httpResponse).toEqual(notFound(new NotFoundParamError('valid_id')));
+    expect(httpResponse).toEqual(notFound(new NotFoundParamError('fakeid')));
   });
 });
