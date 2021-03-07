@@ -1,10 +1,14 @@
 import { Router } from 'express';
-import { createUpdateClientController } from './../../main/factories/update-client-controller-factory';
-import { createAddClientController } from './../../main/factories';
-
 import { adaptRoute } from './../adapters';
+
+import {
+  createUpdateClientController,
+  createAddClientController,
+  createDeleteClientController,
+} from './../../main/factories';
 
 export default (router: Router): void => {
   router.post('/client', adaptRoute(createAddClientController()));
   router.put('/client', adaptRoute(createUpdateClientController()));
+  router.delete('/client', adaptRoute(createDeleteClientController()));
 };
