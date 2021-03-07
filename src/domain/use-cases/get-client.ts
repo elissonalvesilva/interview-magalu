@@ -1,5 +1,5 @@
-import { Client } from '../protocols';
+import { ClientResult } from '../protocols';
 
 export interface GetClient {
-  get(id: string): Promise<Partial<Client>>;
+  get(id: string): Promise<Partial<ClientResult>>;
 }

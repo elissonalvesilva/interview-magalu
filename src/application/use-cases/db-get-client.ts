@@ -1,12 +1,44 @@
+import { ProductServiceRepository } from './../protocols/product-service-repository';
 import { GetClientRepository } from './../protocols/get-client-repository';
-import { Client } from 'domain/protocols';
+import { ClientResult } from './../../domain/protocols';
 import { GetClient } from './../../domain/use-cases';
 
 export class DbGetClient implements GetClient {
-  constructor(private getClientRepository: GetClientRepository) {}
+  constructor(
+    private getClientRepository: GetClientRepository,
+    private productServiceRepository: ProductServiceRepository,
+  ) {}
 
-  async get(id: string): Promise<Partial<Client>> {
+  async get(id: string): Promise<Partial<ClientResult>> {
     const client = await this.getClientRepository.getClient(id);
-    return client;
+    const response: Partial<ClientResult> = {
+      name: client.name,
+      email: client.email,
+    };
+
+    const productList = client.favorites;
+
+    if (productList) {
+      const promises = productList.map(async (productId) => {
+        return this.getProduct(productId);
+      });
+
+      const result = await Promise.all(promises);
+      response.favorites = result;
+    } else {
+      response.favorites = [];
+    }
+
+    return response;
+  }
+
+  private async getProduct(productId: string): Promise<any> {
+    const { statusCode, body } = await this.productServiceRepository.getProduct(
+      productId,
+    );
+    if (statusCode < 300) {
+      return body;
+    }
+    return;
   }
 }
