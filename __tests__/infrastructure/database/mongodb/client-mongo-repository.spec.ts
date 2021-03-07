@@ -224,15 +224,14 @@ describe('ClientMongoRepository', () => {
       expect(response).toBeFalsy();
     });
 
-    test('Should return false if product is not in favorit list and favorit list in empty', async () => {
+    test('Should return false if client not found', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await ClientModel.create(addClientParams);
+      await ClientModel.create(addClientParams);
 
-      const fakeClient = createdClient;
       const fakeProductId = makeFakeProductId().id;
 
-      const response = await sut.checkProduct(fakeClient._id, fakeProductId);
+      const response = await sut.checkProduct('not_valid_id', fakeProductId);
       expect(response).toBeFalsy();
     });
   });
