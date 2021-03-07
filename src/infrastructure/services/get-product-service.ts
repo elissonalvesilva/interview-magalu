@@ -8,7 +8,7 @@ export class GetProductService implements ProductServiceRepository {
   async getProduct(id: string): Promise<HttpResponse> {
     const request = await this.httpClient.request({
       method: 'get',
-      url: `${this.urlAPI}/${id}`,
+      url: `${this.urlAPI}/${id}/`,
     });
 
     return request;
