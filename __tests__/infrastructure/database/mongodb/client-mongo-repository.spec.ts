@@ -1,13 +1,12 @@
-import { Collection } from 'mongodb';
 import faker from 'faker';
 
-import { MongoHelper } from './../../../../src/infrastructure/database/mongodb/helpers/mongo-helper';
+import { MongoHelper } from './../../../../src/infrastructure/database/mongodb/helpers/mongoose-helper';
 import { ClientMongoRepository } from './../../../../src/infrastructure/database/mongodb/client-mongo-repository';
 import { Client } from './../../../../src/domain/protocols';
-import { create } from 'domain';
+import ClientModel from './../../../../src/infrastructure/database/mongodb/models/Clients';
 
 const makeFakeProductId = (): any => {
-  return { id: 'valid_product_id' };
+  return { id: '604198f3d1f52339643d2367' };
 };
 
 const makeAddClient = (): Client => {
@@ -21,8 +20,6 @@ const makeSut = (): ClientMongoRepository => {
   return new ClientMongoRepository();
 };
 
-let clientCollection: Collection;
-
 describe('ClientMongoRepository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL || '');
@@ -33,8 +30,7 @@ describe('ClientMongoRepository', () => {
   });
 
   beforeEach(async () => {
-    clientCollection = await MongoHelper.getCollection('clients');
-    await clientCollection.deleteMany({});
+    await ClientModel.deleteMany({});
   });
 
   describe('Add Client method', async () => {
@@ -50,14 +46,16 @@ describe('ClientMongoRepository', () => {
     test('Should return true if id is valid', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const client = await clientCollection.insertOne(addClientParams);
-      const existsClient = await sut.checkClientById(client.ops[0]._id);
+      const client = await ClientModel.create(addClientParams);
+      const existsClient = await sut.checkClientById(client._id);
       expect(existsClient).toBe(true);
     });
 
     test('Should return false if id is not valid', async () => {
       const sut = makeSut();
-      const existsClient = await sut.checkClientById('123');
+      const existsClient = await sut.checkClientById(
+        '604198f3d1f52339643d2367',
+      );
       expect(existsClient).toBe(false);
     });
   });
@@ -66,7 +64,7 @@ describe('ClientMongoRepository', () => {
     test('Should return true if email is valid', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      await clientCollection.insertOne(addClientParams);
+      await ClientModel.create(addClientParams);
       const existsClient = await sut.checkClientByEmail(addClientParams.email);
       expect(existsClient).toBe(true);
     });
@@ -82,10 +80,9 @@ describe('ClientMongoRepository', () => {
     test('Should return a client if id is valid', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const client = await clientCollection.insertOne(addClientParams);
-      const createdClient = await sut.getClient(client.ops[0]._id);
+      const client = await ClientModel.create(addClientParams);
+      const createdClient = await sut.getClient(client._id);
       expect(createdClient).toBeTruthy();
-      expect(createdClient.id).toBeTruthy();
       expect(createdClient.name).toBe(addClientParams.name);
       expect(createdClient.email).toBe(addClientParams.email);
     });
@@ -93,7 +90,7 @@ describe('ClientMongoRepository', () => {
     test('Should return a null if id is not valid', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      await clientCollection.insertOne(addClientParams);
+      await ClientModel.create(addClientParams);
       const createdClient = await sut.getClient('not valid id');
       expect(createdClient).toBeFalsy();
     });
@@ -103,8 +100,8 @@ describe('ClientMongoRepository', () => {
     test('Should return true if client is updated', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
-      const fakeClient = createdClient.ops[0];
+      const createdClient = await ClientModel.create(addClientParams);
+      const fakeClient = createdClient;
       const updatedClientParams: Client = {
         name: 'valid name 2',
         email: 'mail@mail.com',
@@ -114,25 +111,29 @@ describe('ClientMongoRepository', () => {
         updatedClientParams,
       );
       expect(response).toBe(true);
-      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      const client = await ClientModel.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
-      expect(client.name).toBe(updatedClientParams.name);
+      expect(client?.name).toBe(updatedClientParams.name);
     });
 
     test('Should return false if client is not updated and id is invalid', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
-      const fakeClient = createdClient.ops[0];
+      const createdClient = await ClientModel.create(addClientParams);
+      const fakeClient = createdClient;
       const updatedClientParams: Client = {
         name: 'valid name 2',
         email: 'mail@mail.com',
       };
-      const response = await sut.updateClient('fake_id', updatedClientParams);
+      const response = await sut.updateClient(
+        makeFakeProductId().id,
+        updatedClientParams,
+      );
+
       expect(response).toBe(false);
-      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      const client = await ClientModel.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
-      expect(client.name).toBe(addClientParams.name);
+      expect(client?.name).toBe(addClientParams.name);
     });
   });
 
@@ -140,11 +141,11 @@ describe('ClientMongoRepository', () => {
     test('Should return true if client is updated', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
-      const fakeClient = createdClient.ops[0];
+      const createdClient = await ClientModel.create(addClientParams);
+      const fakeClient = createdClient;
       const response = await sut.deleteClient(fakeClient._id);
       expect(response).toBe(true);
-      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      const client = await ClientModel.findOne({ _id: fakeClient._id });
       expect(client).toBeFalsy();
       expect(client).toBeNull();
     });
@@ -152,13 +153,13 @@ describe('ClientMongoRepository', () => {
     test('Should return false if client is not delete and id is invalid', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
-      const fakeClient = createdClient.ops[0];
-      const response = await sut.deleteClient('fake_id');
+      const createdClient = await ClientModel.create(addClientParams);
+      const fakeClient = createdClient;
+      const response = await sut.deleteClient('604198f3d1f52339643d2367');
       expect(response).toBe(false);
-      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      const client = await ClientModel.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
-      expect(client.name).toBe(addClientParams.name);
+      expect(client?.name).toBe(addClientParams.name);
     });
   });
 
@@ -166,30 +167,34 @@ describe('ClientMongoRepository', () => {
     test('Should return true if product is added', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
-      const fakeClient = createdClient.ops[0];
+      const createdClient = await ClientModel.create(addClientParams);
+      const fakeClient = createdClient;
       const fakeProductId = makeFakeProductId().id;
       const response = await sut.addFavorit(fakeClient._id, fakeProductId);
       expect(response).toBe(true);
-      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      const client = await ClientModel.findOne({ _id: fakeClient._id });
       expect(client).toBeTruthy();
-      expect(client.favorites).toMatchObject([{ productId: fakeProductId }]);
+      expect(client?.favorites).toContainEqual(fakeProductId);
     });
 
     test('Should return false if product is not added', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
-      const fakeClient = createdClient.ops[0];
+      const createdClient = await ClientModel.create(addClientParams);
+      const fakeClient = createdClient;
       const updatedClientParams: Client = {
         name: 'valid name 2',
         email: 'mail@mail.com',
       };
-      const response = await sut.updateClient('fake_id', updatedClientParams);
+      const response = await sut.updateClient(
+        '604198f3d1f52339643d2367',
+        updatedClientParams,
+      );
       expect(response).toBe(false);
-      const client = await clientCollection.findOne({ _id: fakeClient._id });
+      const client = await ClientModel.findOne({ _id: fakeClient._id });
+
       expect(client).toBeTruthy();
-      expect(client.favorites).toBeUndefined();
+      expect(client?.favorites?.length).toBe(0);
     });
   });
 
@@ -198,9 +203,9 @@ describe('ClientMongoRepository', () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
       addClientParams.favorites = [makeFakeProductId().id];
-      const createdClient = await clientCollection.insertOne(addClientParams);
+      const createdClient = await ClientModel.create(addClientParams);
 
-      const fakeClient = createdClient.ops[0];
+      const fakeClient = createdClient;
       const fakeProductId = makeFakeProductId().id;
 
       const response = await sut.checkProduct(fakeClient._id, fakeProductId);
@@ -211,9 +216,9 @@ describe('ClientMongoRepository', () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
       addClientParams.favorites = [makeFakeProductId().id];
-      const createdClient = await clientCollection.insertOne(addClientParams);
+      const createdClient = await ClientModel.create(addClientParams);
 
-      const fakeClient = createdClient.ops[0];
+      const fakeClient = createdClient;
 
       const response = await sut.checkProduct(fakeClient._id, 'teste');
       expect(response).toBeFalsy();
@@ -222,9 +227,9 @@ describe('ClientMongoRepository', () => {
     test('Should return false if product is not in favorit list and favorit list in empty', async () => {
       const sut = makeSut();
       const addClientParams = makeAddClient();
-      const createdClient = await clientCollection.insertOne(addClientParams);
+      const createdClient = await ClientModel.create(addClientParams);
 
-      const fakeClient = createdClient.ops[0];
+      const fakeClient = createdClient;
       const fakeProductId = makeFakeProductId().id;
 
       const response = await sut.checkProduct(fakeClient._id, fakeProductId);
