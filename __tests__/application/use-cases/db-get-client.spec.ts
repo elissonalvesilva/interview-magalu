@@ -5,7 +5,6 @@ import { Client } from 'domain/protocols';
 const id = 'valid_id';
 
 const makeFakeClient = (): Client => ({
-  id,
   name: 'valid name',
   email: 'mail@mail.com',
 });

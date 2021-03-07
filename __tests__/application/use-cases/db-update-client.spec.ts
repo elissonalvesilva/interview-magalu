@@ -6,7 +6,6 @@ import { CheckClientByIdRepository } from 'application/protocols';
 const fakeId = 'valid_id';
 
 const makeFakeClient = (): Client => ({
-  id: fakeId,
   name: 'valid name',
   email: 'mail@mail.com',
 });
@@ -60,7 +59,7 @@ describe('DbUpdateClient UseCase', () => {
       );
 
       await sut.update(fakeId, makeFakeClient());
-      expect(checkClientByIdRepositorySpy).toBeCalledWith(makeFakeClient().id);
+      expect(checkClientByIdRepositorySpy).toBeCalledWith(fakeId);
     });
 
     test('should return throw if CheckClientByIdRepository throws', async () => {

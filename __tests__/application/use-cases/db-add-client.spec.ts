@@ -4,7 +4,6 @@ import { Client } from 'domain/protocols';
 import { CheckClientByEmailRepository } from 'application/protocols/check-client-by-email-repository';
 
 const makeFakeClient = (): Client => ({
-  id: 'valid_id',
   name: 'valid name',
   email: 'mail@mail.com',
 });
