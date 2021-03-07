@@ -2,7 +2,7 @@ import {
   NotFoundClientResponse,
   NotFoundProductResponse,
   ProductAlreadyAddedResponse,
-} from './../helpers/stack-errors-favorits';
+} from './../../presentation/helpers/stack-errors-favorits';
 
 export type ErrorResponseStackFavorit =
   | NotFoundClientResponse

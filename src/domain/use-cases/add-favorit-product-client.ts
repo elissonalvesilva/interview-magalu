@@ -1,4 +1,4 @@
-import { ResponseAddFavoritProduct } from './../../presentation/protocols/response-added-favorit-product';
+import { ResponseAddFavoritProduct } from './../protocols';
 
 export interface AddFavoritProductClient {
   add(clientId: string, productId: string): Promise<ResponseAddFavoritProduct>;
