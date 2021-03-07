@@ -11,7 +11,7 @@ import {
   serverError,
 } from '../../../src/presentation/helpers/http-helpers';
 import { GetClientController } from './../../../src/presentation/controllers/get-client-controller';
-import { Client } from '../../domain/protocols';
+import { Client, ClientResult } from '../../domain/protocols';
 
 const makeFakeId = (): any => {
   return { id: 'valid_id' };
@@ -24,12 +24,27 @@ const makeFakeClient = (): Client => {
   };
 };
 
+const makeFakeClientResult = (): ClientResult => {
+  const { name, email } = makeFakeClient();
+  return {
+    name,
+    email,
+    favorites: [
+      {
+        id: 'valid_product_id',
+        price: 1,
+        image: 'valid_image',
+        brand: 'valid_brand',
+        title: 'valid_title',
+      },
+    ],
+  };
+};
+
 const makeGetCliente = (): GetClient => {
   class GetClientStub implements GetClient {
-    get(id: string): Promise<Partial<Client>> {
-      const fakeClient = makeFakeClient();
-
-      return new Promise((resolve) => resolve(fakeClient));
+    get(id: string): Promise<Partial<ClientResult>> {
+      return new Promise((resolve) => resolve(makeFakeClientResult()));
     }
   }
 
@@ -79,7 +94,7 @@ describe('Get Client Controller', () => {
     const httpRequest = makeFakeId();
 
     const httpResponse = await sut.handle(httpRequest);
-    expect(httpResponse).toEqual(ok(makeFakeClient()));
+    expect(httpResponse).toEqual(ok(makeFakeClientResult()));
   });
 
   test('Should return 500 if GetClient throws', async () => {
