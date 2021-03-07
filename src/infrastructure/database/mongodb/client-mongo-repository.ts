@@ -63,7 +63,7 @@ export class ClientMongoRepository
       },
     );
 
-    if (clientUpdated.nModified > 0) return true;
+    if (clientUpdated.n > 0) return true;
     return false;
   }
 
