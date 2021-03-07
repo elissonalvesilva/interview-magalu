@@ -14,11 +14,11 @@ export class DbUpdateClient implements UpdateClient {
   async update(id: string, client: Client): Promise<boolean> {
     let updateCreateUser = false;
 
-    const emailIsAlreadyInUse = await this.checkClientByIdRepository.checkClientById(
+    const existClient = await this.checkClientByIdRepository.checkClientById(
       id,
     );
 
-    if (!emailIsAlreadyInUse) {
+    if (existClient) {
       updateCreateUser = await this.updateClientRepository.updateClient(
         id,
         client,
