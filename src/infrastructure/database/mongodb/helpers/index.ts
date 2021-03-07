@@ -1,1 +1,1 @@
-export * from './mongo-helper';
+export * from './mongoose-helper';
