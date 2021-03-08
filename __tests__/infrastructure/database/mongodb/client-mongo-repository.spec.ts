@@ -235,4 +235,23 @@ describe('ClientMongoRepository', () => {
       expect(response).toBeFalsy();
     });
   });
+
+  describe('GetClients method', async () => {
+    test('Should return clients', async () => {
+      const sut = makeSut();
+      const addClientParams = makeAddClient();
+      await ClientModel.create(addClientParams);
+      const clients = await sut.getClients();
+      if (clients) {
+        expect(clients[0].email).toBe(addClientParams.email);
+        expect(clients[0].name).toBe(addClientParams.name);
+      }
+    });
+
+    test('Should return null if not has clients', async () => {
+      const sut = makeSut();
+      const clients = await sut.getClients();
+      expect(clients).toMatchObject([]);
+    });
+  });
 });
