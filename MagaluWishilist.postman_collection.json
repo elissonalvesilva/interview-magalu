@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "5065d0f2-8e06-4e4e-ba61-57c2a040701d",
+		"name": "MagaluWishilist",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CREATE CLIENT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVhMTZiYzRmOGQ4MzgwZTIwZTBkOCIsImlhdCI6MTYxNTE3NjExN30.-qhZoD0dMlb9DX9fapTsMjW350jBaLwj9IgJiw4BzgQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Elizabeth SIlva\",\n    \"email\": \"elizabeth@mail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Client",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVhMTZiYzRmOGQ4MzgwZTIwZTBkOCIsImlhdCI6MTYxNTE3NjExN30.-qhZoD0dMlb9DX9fapTsMjW350jBaLwj9IgJiw4BzgQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Elisson Alves Silva\",\n    \"email\": \"nossilesilva@mail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/client/6044944c5db43aaad91106c9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"client",
+						"6044944c5db43aaad91106c9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Client",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"6042a703475dc8753e83ff44\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Client",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"6042a703475dc8753e83ff44\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/client/6044944c5db43aaad91106c9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"client",
+						"6044944c5db43aaad91106c9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Elisson Alves Silva\",\n    \"email\": \"nossilesilva@gmail.com\",\n    \"password\": \"elisson123@@\",\n    \"passwordConfirmation\": \"elisson123@@\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/account/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"account",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"nossilesilva@gmail.com\",\n    \"password\": \"elisson123@@\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/account/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
