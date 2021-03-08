@@ -12,13 +12,13 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVhMTZiYzRmOGQ4MzgwZTIwZTBkOCIsImlhdCI6MTYxNTE3NjExN30.-qhZoD0dMlb9DX9fapTsMjW350jBaLwj9IgJiw4BzgQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVlYjAxZTI3ZWM1M2ZkNTMzMGQyMCIsImlhdCI6MTYxNTE5NDg4Mn0.4thVHTxz5TUf3HvGBpDhJS5Xb9FKEdWn7U2KWN0ruQo",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Elizabeth SIlva\",\n    \"email\": \"elizabeth@mail.com\"\n}",
+					"raw": "{\n    \"name\": \"Elizabeth SIlva\",\n    \"email\": \"elizabeth@gmail.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -86,7 +86,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVlYjAxZTI3ZWM1M2ZkNTMzMGQyMCIsImlhdCI6MTYxNTE5NDg4Mn0.4thVHTxz5TUf3HvGBpDhJS5Xb9FKEdWn7U2KWN0ruQo",
 						"type": "text"
 					}
 				],
@@ -100,7 +100,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:4513/api/client",
+					"raw": "http://localhost:4513/api/client/6045eb2ee27ec53fd5330d21",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -108,7 +108,8 @@
 					"port": "4513",
 					"path": [
 						"api",
-						"client"
+						"client",
+						"6045eb2ee27ec53fd5330d21"
 					]
 				}
 			},
@@ -205,6 +206,68 @@
 						"api",
 						"account",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Clients",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVlYjAxZTI3ZWM1M2ZkNTMzMGQyMCIsImlhdCI6MTYxNTE5NDg4Mn0.4thVHTxz5TUf3HvGBpDhJS5Xb9FKEdWn7U2KWN0ruQo",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:4513/api/client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Favorit",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDVlYjAxZTI3ZWM1M2ZkNTMzMGQyMCIsImlhdCI6MTYxNTE5NDg4Mn0.4thVHTxz5TUf3HvGBpDhJS5Xb9FKEdWn7U2KWN0ruQo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"clientid\": \"6045eb2ee27ec53fd5330d21\",\n    \"productid\": \"1bf0f365-fbdd-4e21-9786-da459d78dd1f\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4513/api/client/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4513",
+					"path": [
+						"api",
+						"client",
+						"product"
 					]
 				}
 			},
