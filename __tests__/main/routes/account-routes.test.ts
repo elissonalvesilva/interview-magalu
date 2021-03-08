@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { hash } from 'bcrypt';
 
 import app from './../../../src/main/app';
 
@@ -38,6 +39,35 @@ describe('Account Routes', () => {
           passwordConfirmation: '123456',
         })
         .expect(403);
+    });
+  });
+
+  describe('POST /account/login', () => {
+    test('Should return 200 on login', async () => {
+      const password = await hash('123456', 12);
+      await AccountModel.create({
+        name: 'Elisson',
+        email: 'elisson.silva@mail.com',
+        password,
+      });
+
+      await request(app)
+        .post('/api/account/login')
+        .send({
+          email: 'elisson.silva@mail.com',
+          password: '123456',
+        })
+        .expect(200);
+    });
+
+    test('Should return 401 on login', async () => {
+      await request(app)
+        .post('/api/account/login')
+        .send({
+          email: 'elisson.silva@mail.com',
+          password: '123456',
+        })
+        .expect(401);
     });
   });
 });
