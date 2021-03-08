@@ -9,7 +9,7 @@ import {
   ok,
   serverError,
 } from './../../presentation/helpers/http-helpers';
-import { HttpResponse } from 'presentation/protocols';
+import { HttpResponse } from './../../presentation/protocols';
 import { Controller } from './../protocols/controller';
 
 export class GetClientController implements Controller {
