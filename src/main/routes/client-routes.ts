@@ -1,3 +1,4 @@
+import { auth } from './../middlewares/auth';
 import { Router } from 'express';
 import { adaptRoute } from './../adapters';
 
@@ -10,13 +11,18 @@ import {
 } from './../../main/factories';
 
 export default (router: Router): void => {
-  router.post('/client', adaptRoute(createAddClientController()));
-  router.put('/client/:id', adaptRoute(createUpdateClientController()));
-  router.delete('/client/:id', adaptRoute(createDeleteClientController()));
-  router.get('/client/:id', adaptRoute(createGetClientController()));
+  router.post('/client', auth, adaptRoute(createAddClientController()));
+  router.put('/client/:id', auth, adaptRoute(createUpdateClientController()));
+  router.delete(
+    '/client/:id',
+    auth,
+    adaptRoute(createDeleteClientController()),
+  );
+  router.get('/client/:id', auth, adaptRoute(createGetClientController()));
 
   router.post(
     '/client/product',
+    auth,
     adaptRoute(createAddFavoritProductClientController()),
   );
 };
