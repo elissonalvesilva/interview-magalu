@@ -322,7 +322,7 @@ describe('Client Routes', () => {
     });
   });
 
-  describe('GET /client -> Get Client', () => {
+  describe('GET /client/:id -> Get Client', () => {
     let accessToken: string;
     beforeEach(async () => {
       accessToken = await mockAccessToken();
@@ -361,15 +361,46 @@ describe('Client Routes', () => {
         .send()
         .expect(200);
     });
+  });
 
-    test('should return 400 if id is not provided on get client', async () => {
-      const response = await request(app)
-        .get('/api/client/')
+  describe('GET /client -> Get Clients', () => {
+    let accessToken: string;
+    beforeEach(async () => {
+      accessToken = await mockAccessToken();
+    });
+    test('should return clients', async () => {
+      const client = await ClientModel.create({
+        name: 'valid name',
+        email: 'mail@mail.com',
+      });
+      const clientId = client._id;
+
+      const { data } = await axios.get(`${process.env.API_PRODUCT}/?page=1`);
+      const productid1 = data.products[0].id;
+      const productid2 = data.products[1].id;
+
+      await request(app)
+        .post('/api/client/product')
         .set('x-access-token', accessToken)
-        .send({})
-        .expect(404);
+        .send({
+          clientid: clientId,
+          productid: productid1,
+        })
+        .expect(200);
+      await request(app)
+        .post('/api/client/product')
+        .set('x-access-token', accessToken)
+        .send({
+          clientid: clientId,
+          productid: productid2,
+        })
+        .expect(200);
 
-      expect(response.body.error).toBeUndefined();
+      await request(app)
+        .get(`/api/client`)
+        .set('x-access-token', accessToken)
+        .send()
+        .expect(200);
     });
   });
 });
