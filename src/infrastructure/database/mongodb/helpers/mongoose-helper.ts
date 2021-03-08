@@ -23,9 +23,4 @@ export class MongoHelper {
   static disconnect(): void {
     mongoose.connection.close();
   }
-
-  static map(data: any): any {
-    const { _id, ...rest } = data;
-    return { ...rest, id: _id };
-  }
 }
