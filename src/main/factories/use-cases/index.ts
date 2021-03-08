@@ -4,3 +4,4 @@ export * from './delete-client-factory';
 export * from './add-favorit-product-client-factory';
 export * from './get-client-factory';
 export * from './account';
+export * from './get-clients-factory';

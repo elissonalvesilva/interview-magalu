@@ -8,6 +8,7 @@ import {
   createDeleteClientController,
   createAddFavoritProductClientController,
   createGetClientController,
+  createGetClientsController,
 } from './../../main/factories';
 
 export default (router: Router): void => {
@@ -19,6 +20,7 @@ export default (router: Router): void => {
     adaptRoute(createDeleteClientController()),
   );
   router.get('/client/:id', auth, adaptRoute(createGetClientController()));
+  router.get('/client', auth, adaptRoute(createGetClientsController()));
 
   router.post(
     '/client/product',
