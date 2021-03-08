@@ -5,13 +5,15 @@ import AccountModel from './../mongodb/models/Account';
 import {
   AccountResponse,
   GetAccountByEmailRepository,
+  UpdateAccessTokenRepository,
 } from './../../../../src/application/protocols/account';
 
 export class AccountMongoRepository
   implements
     AddAccountRepository,
     CheckAccountByEmailRepository,
-    GetAccountByEmailRepository {
+    GetAccountByEmailRepository,
+    UpdateAccessTokenRepository {
   async add(account: Account): Promise<boolean> {
     const accountResp = await AccountModel.create(account);
     return accountResp !== null;
@@ -46,5 +48,18 @@ export class AccountMongoRepository
     }
 
     return null;
+  }
+
+  async updateAccessToken(id: string, token: string): Promise<void> {
+    await AccountModel.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          accessToken: token,
+        },
+      },
+    );
   }
 }
