@@ -57,8 +57,13 @@ npm i
  - You must to change to .env the file .env-example
 
 #### 3 - Step
+ - Starts MongoDb
 ```
 docker-compose up -d
+```
+ - Starts application
+```
+npm run start:dev
 ```
 
 ### Routes
@@ -75,6 +80,12 @@ docker-compose up -d
   - GET `/api/client/:id`
   - Params:
     - id: string
+  - Headers:
+    - x-access-token: string
+
+> Get All Clients
+  - GET `/api/client`
+  - Params:
   - Headers:
     - x-access-token: string
 
