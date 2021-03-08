@@ -12,7 +12,7 @@ import { DbAuthentication } from './../../../src/application/use-cases/db-authen
 const makeFakeAccount = (): any => {
   const password = faker.internet.password();
   return {
-    _id: 'valid_id',
+    id: 'valid_id',
     name: faker.name.findName(),
     email: faker.internet.email(),
     password,
@@ -210,7 +210,7 @@ describe('DbAuthentication UseCase', () => {
       const encrypterSpy = jest.spyOn(encrypterStub, 'encrypt');
 
       await sut.auth(authenticationParams);
-      expect(encrypterSpy).toBeCalledWith(fakeAccount._id);
+      expect(encrypterSpy).toBeCalledWith(fakeAccount.id);
     });
 
     test('Should throw if CriptograpyEncrypter throws', async () => {
@@ -270,7 +270,7 @@ describe('DbAuthentication UseCase', () => {
 
       await sut.auth(authenticationParams);
       expect(updateAccessTokenRepositorySpy).toBeCalledWith(
-        fakeAccount._id,
+        fakeAccount.id,
         fakeEncrypt,
       );
     });
