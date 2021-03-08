@@ -55,4 +55,24 @@ describe('AccountMongoRepository', () => {
       expect(isValid).toBe(false);
     });
   });
+
+  describe('LoadByEmail method', () => {
+    test('should return account if in database', async () => {
+      const fakeAccount = makeFakeAccount();
+      const account = await AccountModel.create(fakeAccount);
+
+      const sut = makeSut();
+      const accountResponse = await sut.loadByEmail(account.email);
+      expect(accountResponse?.email).toBe(account.email);
+      expect(accountResponse?.name).toBe(account.name);
+    });
+
+    test('should return null if account not in database', async () => {
+      await AccountModel.create(makeFakeAccount());
+
+      const sut = makeSut();
+      const accountResponse = await sut.loadByEmail('invalid_email@mail.com');
+      expect(accountResponse).toBeNull();
+    });
+  });
 });
