@@ -38,6 +38,11 @@ export class DbGetClient implements GetClient {
   }
 
   private async getProduct(productId: string): Promise<any> {
+    /**
+     * TODO: Adicionar estrategia de cache para que ao buscar um produto, validar
+     * se o mesmo já foi adicionado anteriormente por alguem, caso sim, já retorna do cache
+     * fazendo com que haja menos custo ao fazer requests externas
+     */
     const { statusCode, body } = await this.productServiceRepository.getProduct(
       productId,
     );
