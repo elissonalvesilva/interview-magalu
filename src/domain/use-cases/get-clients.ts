@@ -1,9 +1,9 @@
-import { ClientResult } from 'domain/protocols';
+import { Client } from './../../domain/protocols';
 
-export interface ClientsList {
-  clients: ClientResult[];
+export interface ClientResponse extends Client {
+  _id: string;
 }
 
 export interface GetClients {
-  getClients(): Promise<Partial<ClientsList>>;
+  getClients(): Promise<ClientResponse[] | null>;
 }

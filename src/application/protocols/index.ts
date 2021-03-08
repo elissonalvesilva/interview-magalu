@@ -9,3 +9,4 @@ export * from './product-service-repository';
 export * from './check-added-favorit-product';
 export * from './http';
 export * from './criptography';
+export * from './get-clients-repository';
