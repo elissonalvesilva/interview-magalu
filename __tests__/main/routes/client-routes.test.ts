@@ -1,5 +1,6 @@
 import axios from 'axios';
 import request from 'supertest';
+import { sign } from 'jsonwebtoken';
 
 import { HttpResponse } from './../../../src/presentation/protocols';
 
@@ -13,6 +14,28 @@ import {
   NotFoundParamError,
 } from './../../../src/presentation/erros';
 import ClientModel from './../../../src/infrastructure/database/mongodb/models/Clients';
+import AccountModel from './../../../src/infrastructure/database/mongodb/models/Account';
+
+const mockAccessToken = async (): Promise<string> => {
+  const res = await AccountModel.create({
+    name: 'Rodrigo',
+    email: 'rodrigo.manguinho@gmail.com',
+    password: '123',
+  });
+  const id = res._id;
+  const accessToken = sign({ id }, process.env.JWT_SECRET || 'aaa');
+  await AccountModel.updateOne(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        accessToken,
+      },
+    },
+  );
+  return accessToken;
+};
 
 describe('Client Routes', () => {
   beforeAll(async () => {
@@ -25,11 +48,18 @@ describe('Client Routes', () => {
 
   beforeEach(async () => {
     await ClientModel.deleteMany({});
+    await AccountModel.deleteMany({});
   });
   describe('POST /client -> Add Client', () => {
+    let accessToken: string;
+    beforeEach(async () => {
+      accessToken = await mockAccessToken();
+    });
+
     test('should return 200 on create client', async () => {
       await request(app)
         .post('/api/client')
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
           email: 'mail@mail.com',
@@ -39,6 +69,7 @@ describe('Client Routes', () => {
     test('should return 400 if name is not provided on create client', async () => {
       const response = await request(app)
         .post('/api/client')
+        .set('x-access-token', accessToken)
         .send({
           email: 'mail@mail.com',
         })
@@ -52,6 +83,7 @@ describe('Client Routes', () => {
     test('should return 400 if email is not provided on create client', async () => {
       const response = await request(app)
         .post('/api/client')
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
         })
@@ -65,6 +97,7 @@ describe('Client Routes', () => {
     test('should return 400 if email is not valid on create client', async () => {
       const response = await request(app)
         .post('/api/client')
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
           email: 'notValidEmail',
@@ -83,6 +116,7 @@ describe('Client Routes', () => {
 
       const response = await request(app)
         .post('/api/client')
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
           email: 'mail@mail.com',
@@ -97,6 +131,11 @@ describe('Client Routes', () => {
   });
 
   describe('PUT /client -> Update Client', () => {
+    let accessToken: string;
+    beforeEach(async () => {
+      accessToken = await mockAccessToken();
+    });
+
     test('should update client', async () => {
       const client = await ClientModel.create({
         name: 'valid name',
@@ -106,6 +145,7 @@ describe('Client Routes', () => {
 
       await request(app)
         .put(`/api/client/${clientId}`)
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
           email: 'mail@mail.com',
@@ -116,6 +156,7 @@ describe('Client Routes', () => {
     test('should return 400 if id is not provided on update client', async () => {
       const response = await request(app)
         .put(`/api/client`)
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
           email: 'mail@mail.com',
@@ -127,6 +168,7 @@ describe('Client Routes', () => {
     test('should return 400 if name is not provided on update client', async () => {
       const response = await request(app)
         .put('/api/client/604198f3d1f52339643d2367')
+        .set('x-access-token', accessToken)
         .send({
           email: 'mail@mail.com',
         })
@@ -140,6 +182,7 @@ describe('Client Routes', () => {
     test('should return 400 if email is not provided on update client', async () => {
       const response = await request(app)
         .put('/api/client/604198f3d1f52339643d2367')
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
         })
@@ -158,6 +201,7 @@ describe('Client Routes', () => {
 
       const response = await request(app)
         .put('/api/client/604198f3d1f52339643d2367')
+        .set('x-access-token', accessToken)
         .send({
           name: 'valid name',
           email: 'mail@mail.com',
@@ -172,6 +216,10 @@ describe('Client Routes', () => {
   });
 
   describe('DELETE /client -> Delete Client', () => {
+    let accessToken: string;
+    beforeEach(async () => {
+      accessToken = await mockAccessToken();
+    });
     test('should delete client', async () => {
       const client = await ClientModel.create({
         name: 'valid name',
@@ -179,12 +227,17 @@ describe('Client Routes', () => {
       });
       const clientId = client._id;
 
-      await request(app).delete(`/api/client/${clientId}`).send({}).expect(200);
+      await request(app)
+        .delete(`/api/client/${clientId}`)
+        .set('x-access-token', accessToken)
+        .send({})
+        .expect(200);
     });
 
     test('should return 400 if id is not provided on delete client', async () => {
       const response = await request(app)
         .delete('/api/client/')
+        .set('x-access-token', accessToken)
         .send({})
         .expect(404);
 
@@ -199,6 +252,7 @@ describe('Client Routes', () => {
 
       const response = await request(app)
         .delete('/api/client/604198f3d1f52339643d2367')
+        .set('x-access-token', accessToken)
         .send({})
         .expect(404);
 
@@ -210,6 +264,10 @@ describe('Client Routes', () => {
   });
 
   describe('POST /client/product -> Add Favorit', () => {
+    let accessToken: string;
+    beforeEach(async () => {
+      accessToken = await mockAccessToken();
+    });
     test('should add product in client', async () => {
       const { data } = await axios.get(`${process.env.API_PRODUCT}/?page=1`);
       const productid = data.products[0].id;
@@ -221,6 +279,7 @@ describe('Client Routes', () => {
 
       await request(app)
         .post('/api/client/product')
+        .set('x-access-token', accessToken)
         .send({
           clientid: clientId,
           productid,
@@ -231,6 +290,7 @@ describe('Client Routes', () => {
     test('should return 400 if clientid is not provided on add product in favorit list', async () => {
       const response = await request(app)
         .post('/api/client/product')
+        .set('x-access-token', accessToken)
         .send({
           productid: 'valid_productid',
         })
@@ -249,6 +309,7 @@ describe('Client Routes', () => {
       const clientId = client._id;
       const response = await request(app)
         .post('/api/client/product')
+        .set('x-access-token', accessToken)
         .send({
           clientid: clientId,
         })
@@ -262,6 +323,10 @@ describe('Client Routes', () => {
   });
 
   describe('GET /client -> Get Client', () => {
+    let accessToken: string;
+    beforeEach(async () => {
+      accessToken = await mockAccessToken();
+    });
     test('should return a client', async () => {
       const client = await ClientModel.create({
         name: 'valid name',
@@ -275,6 +340,7 @@ describe('Client Routes', () => {
 
       await request(app)
         .post('/api/client/product')
+        .set('x-access-token', accessToken)
         .send({
           clientid: clientId,
           productid: productid1,
@@ -282,18 +348,24 @@ describe('Client Routes', () => {
         .expect(200);
       await request(app)
         .post('/api/client/product')
+        .set('x-access-token', accessToken)
         .send({
           clientid: clientId,
           productid: productid2,
         })
         .expect(200);
 
-      await request(app).get(`/api/client/${clientId}`).send().expect(200);
+      await request(app)
+        .get(`/api/client/${clientId}`)
+        .set('x-access-token', accessToken)
+        .send()
+        .expect(200);
     });
 
     test('should return 400 if id is not provided on get client', async () => {
       const response = await request(app)
         .get('/api/client/')
+        .set('x-access-token', accessToken)
         .send({})
         .expect(404);
 
