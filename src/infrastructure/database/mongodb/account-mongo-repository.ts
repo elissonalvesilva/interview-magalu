@@ -5,6 +5,8 @@ import AccountModel from './../mongodb/models/Account';
 import {
   AccountResponse,
   GetAccountByEmailRepository,
+  GetAccountByTokenRepository,
+  GetAccountByTokenRepositoryResponse,
   UpdateAccessTokenRepository,
 } from './../../../../src/application/protocols/account';
 
@@ -13,7 +15,8 @@ export class AccountMongoRepository
     AddAccountRepository,
     CheckAccountByEmailRepository,
     GetAccountByEmailRepository,
-    UpdateAccessTokenRepository {
+    UpdateAccessTokenRepository,
+    GetAccountByTokenRepository {
   async add(account: Account): Promise<boolean> {
     const accountResp = await AccountModel.create(account);
     return accountResp !== null;
@@ -61,5 +64,28 @@ export class AccountMongoRepository
         },
       },
     );
+  }
+
+  async loadByToken(
+    token: string,
+  ): Promise<GetAccountByTokenRepositoryResponse | null> {
+    const account = await AccountModel.findOne(
+      {
+        accessToken: token,
+      },
+      {
+        _id: 1,
+      },
+    );
+
+    if (account) {
+      if (account._id) {
+        const accountResponse: GetAccountByTokenRepositoryResponse = {
+          id: account._id,
+        };
+        return accountResponse;
+      }
+    }
+    return null;
   }
 }
