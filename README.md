@@ -146,3 +146,6 @@ npm run start:dev
 <img src="./assets/account-architecture.png">
  - Client Architecture
 <img src="./assets/client-architecture.png">
+
+### Examples how to use API
+[POSTMAN-Interview-Examples](MagaluWishilist.postman_collection.json)
