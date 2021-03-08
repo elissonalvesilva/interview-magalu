@@ -8,19 +8,3 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
-
-  wishlist:
-    container_name: wishlist-api
-    restart: always
-    build: Dockerfile.dev
-    command: npm run start:dev
-    volumes:
-      - .:/usr/src/app
-    environment:
-      - PORT=4513
-    ports:
-      - "4513:4513"
-    depends_on:
-      - mongo
-    links:
-      - mongo
