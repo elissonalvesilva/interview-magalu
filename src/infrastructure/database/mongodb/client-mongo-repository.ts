@@ -10,7 +10,9 @@ import {
   DeleteClientRepository,
   GetClientRepository,
   UpdateClientRepository,
+  GetClientsRepository,
 } from './../../../application/protocols';
+import { ClientResponse } from 'domain/use-cases';
 
 export class ClientMongoRepository
   implements
@@ -21,7 +23,8 @@ export class ClientMongoRepository
     UpdateClientRepository,
     DeleteClientRepository,
     AddFavoritProductClientRepository,
-    CheckAddedFavoritProductRepository {
+    CheckAddedFavoritProductRepository,
+    GetClientsRepository {
   async addClient(client: Client): Promise<boolean> {
     const resultResponse = await ClientModel.create(client);
     return resultResponse !== null;
@@ -105,5 +108,10 @@ export class ClientMongoRepository
       return false;
     }
     return false;
+  }
+
+  async getClients(): Promise<ClientResponse[] | null> {
+    const clients = await ClientModel.find({}, { _v: 0 });
+    return clients;
   }
 }
