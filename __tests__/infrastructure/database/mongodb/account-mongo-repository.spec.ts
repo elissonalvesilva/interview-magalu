@@ -75,4 +75,18 @@ describe('AccountMongoRepository', () => {
       expect(accountResponse).toBeNull();
     });
   });
+
+  describe('updateAccessToken method', () => {
+    test('should update the account accessToken on success', async () => {
+      const sut = makeSut();
+      const res = await AccountModel.create(makeFakeAccount());
+      const fakeAccount = res;
+      expect(fakeAccount.accessToken).toBeFalsy();
+      const accessToken = faker.random.uuid();
+      await sut.updateAccessToken(fakeAccount._id, accessToken);
+      const account = await AccountModel.findOne({ _id: fakeAccount._id });
+      expect(account).toBeTruthy();
+      expect(account?.accessToken).toBe(accessToken);
+    });
+  });
 });
