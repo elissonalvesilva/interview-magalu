@@ -1,4 +1,4 @@
-import { ClientsList, GetClients } from './../../domain/use-cases';
+import { ClientResponse, GetClients } from './../../domain/use-cases';
 import { ServerError } from '../../../src/presentation/erros';
 import {
   ok,
@@ -18,32 +18,20 @@ const makeFakeClient = (): Client => {
   };
 };
 
-const makeFakeClientsResult = (): ClientsList => {
+const makeFakeClientsResult = (): ClientResponse => {
   const { name, email } = makeFakeClient();
   return {
-    clients: [
-      {
-        _id: 'valid_id',
-        name,
-        email,
-        favorites: [
-          {
-            id: 'valid_product_id',
-            price: 1,
-            image: 'valid_image',
-            brand: 'valid_brand',
-            title: 'valid_title',
-          },
-        ],
-      },
-    ],
+    _id: 'valid_id',
+    name,
+    email,
+    favorites: ['123'],
   };
 };
 
 const makeGetClients = (): GetClients => {
   class GetClientStub implements GetClients {
-    getClients(): Promise<Partial<ClientsList>> {
-      return new Promise((resolve) => resolve(makeFakeClientsResult()));
+    getClients(): Promise<ClientResponse[] | null> {
+      return new Promise((resolve) => resolve([makeFakeClientsResult()]));
     }
   }
 
@@ -83,7 +71,7 @@ describe('Get Clients Controller', () => {
     const httpRequest = makeFakeId();
 
     const httpResponse = await sut.handle(httpRequest);
-    expect(httpResponse).toEqual(ok(makeFakeClientsResult()));
+    expect(httpResponse).toEqual(ok([makeFakeClientsResult()]));
   });
 
   test('Should return 500 if GetClients throws', async () => {
@@ -104,10 +92,10 @@ describe('Get Clients Controller', () => {
 
     jest
       .spyOn(getClientsStub, 'getClients')
-      .mockReturnValueOnce(new Promise((resolve) => resolve({})));
+      .mockReturnValueOnce(new Promise((resolve) => resolve([])));
 
     const httpResponse = await sut.handle({});
     expect(httpResponse.statusCode).toBe(200);
-    expect(httpResponse.body).toMatchObject({});
+    expect(httpResponse.body).toMatchObject([]);
   });
 });
