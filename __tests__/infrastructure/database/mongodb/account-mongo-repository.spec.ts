@@ -89,4 +89,37 @@ describe('AccountMongoRepository', () => {
       expect(account?.accessToken).toBe(accessToken);
     });
   });
+
+  describe('loadByToken method', () => {
+    let name = faker.name.findName();
+    let email = faker.internet.email();
+    let password = faker.internet.password();
+    let accessToken = faker.random.uuid();
+
+    beforeEach(() => {
+      name = faker.name.findName();
+      email = faker.internet.email();
+      password = faker.internet.password();
+      accessToken = faker.random.uuid();
+    });
+
+    test('Should return an account on loadByToken', async () => {
+      const sut = makeSut();
+      await AccountModel.create({
+        name,
+        email,
+        password,
+        accessToken,
+      });
+      const account = await sut.loadByToken(accessToken);
+      expect(account).toBeTruthy();
+      expect(account?.id).toBeTruthy();
+    });
+
+    test('Should return null if loadByToken fails', async () => {
+      const sut = makeSut();
+      const account = await sut.loadByToken(accessToken);
+      expect(account).toBeFalsy();
+    });
+  });
 });
