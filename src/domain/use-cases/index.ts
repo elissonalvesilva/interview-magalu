@@ -5,3 +5,4 @@ export * from './delete-client';
 export * from './add-favorit-product-client';
 export * from './add-account';
 export * from './authentication';
+export * from './get-account-by-token';
