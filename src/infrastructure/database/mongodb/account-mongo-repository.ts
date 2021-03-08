@@ -6,7 +6,6 @@ import {
   AccountResponse,
   GetAccountByEmailRepository,
 } from './../../../../src/application/protocols/account';
-import { MongoHelper } from './helpers/mongoose-helper';
 
 export class AccountMongoRepository
   implements
@@ -24,7 +23,28 @@ export class AccountMongoRepository
   }
 
   async loadByEmail(email: string): Promise<AccountResponse | null> {
-    const accountClient = await AccountModel.findOne({ email });
-    return accountClient && MongoHelper.map(accountClient);
+    const accountClient = await AccountModel.findOne(
+      { email },
+      {
+        _id: 1,
+        name: 1,
+        email: 1,
+        password: 1,
+      },
+    );
+
+    if (accountClient) {
+      if (accountClient._id) {
+        const accountResponse: AccountResponse = {
+          id: accountClient._id,
+          name: accountClient.name,
+          email: accountClient.email,
+          password: accountClient.password,
+        };
+        return accountResponse;
+      }
+    }
+
+    return null;
   }
 }
